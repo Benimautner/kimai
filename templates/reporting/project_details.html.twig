@@ -315,6 +315,7 @@
                 {% if activities is not empty %}
                     <li class="nav-item"><a class="nav-link" data-chart="{{ chartPrefix }}Activity" href="#activity-chart" data-bs-toggle="tab">{{ 'activity'|trans }}</a></li>
                 {% endif %}
+                <li class="nav-item"><a class="nav-link" data-chart="{{ chartPrefix }}Balance" href="#balance-chart" data-bs-toggle="tab">{{ 'running balance'|trans }}</a></li>
             </ul>
             <div class="card-actions">
                 {{ widgets.badge_counter(project_view.durationTotal|duration) }}
@@ -461,6 +462,31 @@
                 {{ _self.activity_tab(activities, project_view.durationTotal, project.customer.currency, chartPrefix, view_revenue) }}
             </div>
             {% endif %}
+            <div class="chart tab-pane" id="balance-chart">
+                {% set chartData = [] %}
+                {% set chartLabels = [] %}
+
+                {% for year in project_details.years %}
+                    {# month \App\Model\Statistic\Month #}
+                    {% for month in year.months %}
+                        {% set monthDate = date(year.year ~ '-' ~ month.month ~ '-01 00:00:00') %}
+                        {% if project.end is null or monthDate < project.end %}
+                            {% set totalBudget = month.billableDurationBalance %}
+                            {% set chartLabels = chartLabels|merge([monthDate|month_name ~ ' ' ~ year.year]) %}
+                            {% set chartValue = {
+                                        'label': (totalBudget|duration),
+                                        'value': '' ~ (totalBudget|chart_duration),
+                                    } %}
+                            {% if totalBudget < 0 %}
+                                {% set chartValue = chartValue|merge({'color': 'red'}) %}
+                            {% endif %}
+                            {% set chartData = chartData|merge([chartValue]) %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                {{ charts.bar_chart(chartPrefix ~ 'Balance', chartLabels, [chartData], {'height': '300px', 'renderEvent': 'render.' ~ chartPrefix ~ "Balance"}) }}
+            </div>
+
             {% if see_users and project_details.userStats|length > 0 %}
             <div class="chart tab-pane" id="user-chart">
                 <div class="row">

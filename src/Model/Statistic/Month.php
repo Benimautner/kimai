@@ -15,6 +15,7 @@ final class Month extends Timesheet
 {
     private string $month;
     private int $billableDuration = 0;
+    private int $billableDurationBalance = 0;
     private float $billableRate = 0.00;
 
     /**
@@ -49,6 +50,16 @@ final class Month extends Timesheet
     public function setBillableDuration(int $billableDuration): void
     {
         $this->billableDuration = $billableDuration;
+    }
+
+    public function getBillableDurationBalance(): int
+    {
+        return $this->billableDurationBalance;
+    }
+
+    public function setBillableDurationBalance(int $billableDurationBalance): void
+    {
+        $this->billableDurationBalance = $billableDurationBalance;
     }
 
     public function getBillableRate(): float
