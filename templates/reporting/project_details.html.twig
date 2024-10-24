@@ -315,7 +315,9 @@
                 {% if activities is not empty %}
                     <li class="nav-item"><a class="nav-link" data-chart="{{ chartPrefix }}Activity" href="#activity-chart" data-bs-toggle="tab">{{ 'activity'|trans }}</a></li>
                 {% endif %}
-                <li class="nav-item"><a class="nav-link" data-chart="{{ chartPrefix }}Balance" href="#balance-chart" data-bs-toggle="tab">{{ 'running balance'|trans }}</a></li>
+                {% if project.start is not empty %}
+                    <li class="nav-item"><a class="nav-link" data-chart="{{ chartPrefix }}Balance" href="#balance-chart" data-bs-toggle="tab">{{ 'running balance'|trans }}</a></li>
+                {% endif %}
             </ul>
             <div class="card-actions">
                 {{ widgets.badge_counter(project_view.durationTotal|duration) }}
@@ -462,6 +464,7 @@
                 {{ _self.activity_tab(activities, project_view.durationTotal, project.customer.currency, chartPrefix, view_revenue) }}
             </div>
             {% endif %}
+            {% if project.start is not empty %}
             <div class="chart tab-pane" id="balance-chart">
                 {% set chartData = [] %}
                 {% set chartLabels = [] %}
@@ -486,6 +489,7 @@
                 {% endfor %}
                 {{ charts.bar_chart(chartPrefix ~ 'Balance', chartLabels, [chartData], {'height': '300px', 'renderEvent': 'render.' ~ chartPrefix ~ "Balance"}) }}
             </div>
+            {% endif %}
 
             {% if see_users and project_details.userStats|length > 0 %}
             <div class="chart tab-pane" id="user-chart">

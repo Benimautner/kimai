@@ -622,7 +622,7 @@ class ProjectStatisticService
         // ---------------------------------------------------
         $runningDurationBalance = [];
         $idx = 0;
-        if ($project !== null && $project->getTimeBudget() > 0 && $project->isMonthlyBudget()) {
+        if ($project !== null && $project->getTimeBudget() > 0 && $project->isMonthlyBudget() && $project->getStart() !== null) {
             foreach($model->getYears() as $year) {
                 if($year->getYear() > $query->getToday()->format('Y')) {
                     break;
