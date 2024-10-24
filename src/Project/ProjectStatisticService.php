@@ -620,26 +620,25 @@ class ProjectStatisticService
             }
         }
         // ---------------------------------------------------
-
         $runningDurationBalance = [];
         $idx = 0;
-        if ($project->getTimeBudget() > 0 && $project->isMonthlyBudget()) {
+        if ($project !== null && $project->getTimeBudget() > 0 && $project->isMonthlyBudget()) {
             foreach($model->getYears() as $year) {
-                if($year->getYear() > $query->getToday()->format('Y') ) {
+                if($year->getYear() > $query->getToday()->format('Y')) {
                     break;
                 }
                 foreach($year->getMonths() as $month) {
                     if(($year->getYear() >= $query->getToday()->format('Y') && $month->getMonthNumber() > $query->getToday()->format('m'))) {
                         break;
                     }
-                    $previous = $runningDurationBalance[$idx - 1] ?? 0;   
+                    $previous = $runningDurationBalance[$idx - 1] ?? 0;
                     $runningDurationBalance[] = $previous - $project->getTimeBudget() + $month->getBillableDuration();
                     $month->setBillableDurationBalance($runningDurationBalance[$idx]);
                     $idx++;
                 }
-                
             }
         }
+
         return $model;
     }
 
@@ -725,7 +724,7 @@ class ProjectStatisticService
         }
 
         $projectIds = array_keys($projectViews);
-        
+
         $tplQb = $this->timesheetRepository->createQueryBuilder('t');
         $tplQb
             ->select('IDENTITY(t.project) AS id')
